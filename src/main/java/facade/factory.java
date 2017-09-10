@@ -6,10 +6,13 @@
 package facade;
 
 import entity.Idtable;
+import entity.Orders;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -26,10 +29,11 @@ public class factory {
     public String getSql(){
         EntityManager em = emf.createEntityManager();
         try{
-            List<Idtable> l = em.createQuery("SELECT e FROM Idtable e").getResultList();
             String s = "";
-            for(int i = 0; i < l.size(); i++){
-                s+= "id: " + l.get(i).getId() + ", name: " + l.get(i).getName();
+            TypedQuery<Idtable> q = em.createQuery("SELECT a FROM Idtable a", Idtable.class);
+            List<Idtable> l = q.getResultList();
+            for(Idtable x: l){
+               s += x.getName() + x.getId();
             }
             return s;
         } finally {
@@ -57,7 +61,7 @@ public class factory {
         factory f = new factory();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu", null);
         f.addEntityManagerFactory(emf);
-        System.out.println(f.insert(5, "name"));
+        System.out.println(f.getSql());
     }
     
 }
